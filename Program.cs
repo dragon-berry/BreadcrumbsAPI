@@ -2,6 +2,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
+string connectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING") ?? builder.Configuration.GetConnectionString("DefaultConnection")!;
+builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+
 builder.Services.AddDbContext<BreadcrumbsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
