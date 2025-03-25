@@ -77,6 +77,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+builder.Services.AddScoped<IPostsRepository, PostsRepository>();
 
 // Add CORS
 builder.Services.AddCors(options =>
