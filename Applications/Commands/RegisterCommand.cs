@@ -42,7 +42,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
             }
 
             var userDto = result.Adapt<UserDto>();
-            userDto.Token = jwtUtils.GenerateToken(result.Id, result.Email, defaultRoles);
+            userDto.Token = jwtUtils.GenerateToken(result.Id.ToString(), result.Email, defaultRoles);
 
             return userDto;
         }

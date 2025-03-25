@@ -8,7 +8,7 @@ public interface IIdentityService
 
     Task<UserDto?> AuthenticateAsync(string email, string password);
 
-    Task<IdentityUser> CreateUserAsync(RegisterDto registerDto);
+    Task<User> CreateUserAsync(RegisterDto registerDto);
 }
 
 public interface IJwtUtils

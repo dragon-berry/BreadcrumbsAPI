@@ -6,5 +6,5 @@ public class GroupUserRelationship : BaseEntity
     public Guid? UserId { get; set; }
     public bool? IsOwner { get; set; }
     public virtual Group? Group { get; set; }
-    public virtual IdentityUser? User { get; set; }
+    public virtual User? User { get; set; }
 }

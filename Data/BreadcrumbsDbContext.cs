@@ -1,6 +1,6 @@
 ﻿namespace BreadcrumbsAPI.Data;
 
-public class BreadcrumbsDbContext : IdentityDbContext<IdentityUser>
+public class BreadcrumbsDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     private readonly IHttpContextAccessor? _httpContextAccessor;
 
@@ -15,7 +15,6 @@ public class BreadcrumbsDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Location> Locations { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupUserRelationship> GroupUserRelationships { get; set; }
-
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
     {

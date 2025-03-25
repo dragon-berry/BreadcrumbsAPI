@@ -52,7 +52,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Add Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
         .AddEntityFrameworkStores<BreadcrumbsDbContext>()
         .AddDefaultTokenProviders();
 

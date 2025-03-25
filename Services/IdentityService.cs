@@ -2,20 +2,20 @@
 
 public class IdentityService : IIdentityService
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+    private readonly SignInManager<User> _signInManager;
 
-    public IdentityService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager)
+    public IdentityService(UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager, SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
     }
 
-    public async Task<IdentityUser> CreateUserAsync(RegisterDto registerDto)
+    public async Task<User> CreateUserAsync(RegisterDto registerDto)
     {
-        var user = registerDto.Adapt<IdentityUser>();
+        var user = registerDto.Adapt<User>();
         user.UserName = registerDto.Email;
         var result = await _userManager.CreateAsync(user, registerDto.Password!);
 
@@ -55,14 +55,14 @@ public class IdentityService : IIdentityService
 
     public async Task<Result> AddToRolesAsync(string email, List<string> roles)
     {
-        var administratorRole = new IdentityRole(RoleConstants.Administrator);
+        var administratorRole = new IdentityRole<Guid>(RoleConstants.Administrator);
 
         if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
         {
             await _roleManager.CreateAsync(administratorRole);
         }
 
-        var supplierRole = new IdentityRole(RoleConstants.Supplier);
+        var supplierRole = new IdentityRole<Guid>(RoleConstants.Supplier);
         if (_roleManager.Roles.All(r => r.Name != supplierRole.Name))
         {
             await _roleManager.CreateAsync(supplierRole);
@@ -79,7 +79,7 @@ public class IdentityService : IIdentityService
             var roleExist = await _roleManager.RoleExistsAsync(role);
             if (!roleExist)
             {
-                await _roleManager.CreateAsync(new IdentityRole(role));
+                await _roleManager.CreateAsync(new IdentityRole<Guid>(role));
             }
         }
 
