@@ -1,4 +1,4 @@
-﻿namespace BreadcrumbsAPI.Applications.Queries;
+﻿namespace BreadcrumbsAPI.Applications.Users.Queries;
 
 public class LoginQuery : IRequest<UserDto?>
 {

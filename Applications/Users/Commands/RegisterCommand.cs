@@ -1,4 +1,4 @@
-﻿namespace BreadcrumbsAPI.Applications.Commands;
+﻿namespace BreadcrumbsAPI.Applications.Users.Commands;
 
 public class RegisterCommand : IRequest<UserDto>
 {

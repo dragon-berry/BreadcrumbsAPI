@@ -4,9 +4,15 @@ global using BreadcrumbsAPI.Models.Dtos;
 global using BreadcrumbsAPI.Repositories;
 global using BreadcrumbsAPI.Constants;
 global using BreadcrumbsAPI.Services;
-global using BreadcrumbsAPI.Applications.Commands;
-global using BreadcrumbsAPI.Applications.Queries;
+global using BreadcrumbsAPI.Applications.Crumbs.Commands;
+global using BreadcrumbsAPI.Applications.Crumbs.Queries;
+global using BreadcrumbsAPI.Applications.Groups.Commands;
+global using BreadcrumbsAPI.Applications.Groups.Queries;
+global using BreadcrumbsAPI.Applications.Users.Commands;
+global using BreadcrumbsAPI.Applications.Users.Queries;
+global using BreadcrumbsAPI.Applications.CodeValues.Queries;
 global using BreadcrumbsAPI.Data;
+global using BreadcrumbsAPI.Helpers;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

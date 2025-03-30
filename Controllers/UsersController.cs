@@ -1,17 +1,17 @@
 ﻿namespace BreadcrumbsAPI.Controllers;
 
 [ApiController]
-[Route("Users")]
-public class UserController : ControllerBase
+[Route("[controller]")]
+public class UsersController : ControllerBase
 {
     private readonly IMediator mediator;
 
-    public UserController(IMediator _mediator)
+    public UsersController(IMediator _mediator)
     {
         mediator = _mediator;
     }
 
-    [HttpPost("Login")]
+    [HttpGet("Login")]
     public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
     {
         var result = await mediator.Send(new LoginQuery { LoginDto = loginDto });

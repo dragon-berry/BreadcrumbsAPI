@@ -1,5 +1,5 @@
 ﻿namespace BreadcrumbsAPI.Repositories;
 
-public class UsersRepository
+public class UserRepository
 {
 }

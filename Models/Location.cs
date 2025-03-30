@@ -14,9 +14,6 @@ public class Location : BaseEntity
     [Column(TypeName = "varchar(100)")]
     public string? StateProvince { get; set; }
 
-    [Column(TypeName = "varchar(50)")]
-    public string? PostalCode { get; set; }
-
     [Column(TypeName = "varchar(100)")]
     public string? Country { get; set; }
 
@@ -28,4 +25,9 @@ public class Location : BaseEntity
 
     [Column(TypeName = "varchar(500)")]
     public string? GoogleMaps { get; set; }
+
+    public Guid LocationTypeCvId { get; set; }
+
+    // Foreign keys
+    public virtual CodeValue? LocationTypeCv { get; set; }
 }

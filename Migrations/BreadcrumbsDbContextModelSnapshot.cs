@@ -67,17 +67,88 @@ namespace BreadcrumbsAPI.Migrations
                     b.ToTable("CodeValues");
                 });
 
-            modelBuilder.Entity("BreadcrumbsAPI.Models.Group", b =>
+            modelBuilder.Entity("BreadcrumbsAPI.Models.Crumb", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Body")
+                        .HasColumnType("varchar(500)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreationUserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CrumbTypeCvId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("LifeSpanCvId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Likes")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Song")
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UpdatedUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CrumbTypeCvId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("LifeSpanCvId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("Crumbs");
+                });
+
+            modelBuilder.Entity("BreadcrumbsAPI.Models.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CrumbLimitPerDay")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(500)");
@@ -88,7 +159,11 @@ namespace BreadcrumbsAPI.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("LifeSpanCvId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -98,6 +173,11 @@ namespace BreadcrumbsAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("LifeSpanCvId");
 
                     b.ToTable("Groups");
                 });
@@ -114,14 +194,17 @@ namespace BreadcrumbsAPI.Migrations
                     b.Property<Guid>("CreationUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("GroupId")
+                    b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsOwner")
+                    b.Property<bool>("IsOwner")
                         .HasColumnType("bit");
+
+                    b.Property<Guid>("StatusCvId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -129,14 +212,17 @@ namespace BreadcrumbsAPI.Migrations
                     b.Property<Guid>("UpdatedUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("StatusCvId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("GroupId", "UserId")
+                        .IsUnique();
 
                     b.ToTable("GroupUserRelationships");
                 });
@@ -174,11 +260,11 @@ namespace BreadcrumbsAPI.Migrations
                     b.Property<decimal?>("Latitude")
                         .HasColumnType("decimal(10,6)");
 
+                    b.Property<Guid>("LocationTypeCvId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal?>("Longitude")
                         .HasColumnType("decimal(10,6)");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("StateProvince")
                         .HasColumnType("varchar(100)");
@@ -191,66 +277,9 @@ namespace BreadcrumbsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocationTypeCvId");
+
                     b.ToTable("Locations");
-                });
-
-            modelBuilder.Entity("BreadcrumbsAPI.Models.Post", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Body")
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreationUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("GroupId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LifeSpan")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("Likes")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("PostTypeCvId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Song")
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UpdatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("PostTypeCvId");
-
-                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("BreadcrumbsAPI.Models.User", b =>
@@ -465,40 +494,88 @@ namespace BreadcrumbsAPI.Migrations
                     b.Navigation("ParentCv");
                 });
 
+            modelBuilder.Entity("BreadcrumbsAPI.Models.Crumb", b =>
+                {
+                    b.HasOne("BreadcrumbsAPI.Models.CodeValue", "CrumbTypeCv")
+                        .WithMany()
+                        .HasForeignKey("CrumbTypeCvId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BreadcrumbsAPI.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BreadcrumbsAPI.Models.CodeValue", "LifeSpanCv")
+                        .WithMany()
+                        .HasForeignKey("LifeSpanCvId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BreadcrumbsAPI.Models.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CrumbTypeCv");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("LifeSpanCv");
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("BreadcrumbsAPI.Models.Group", b =>
+                {
+                    b.HasOne("BreadcrumbsAPI.Models.CodeValue", "LifeSpanCv")
+                        .WithMany()
+                        .HasForeignKey("LifeSpanCvId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("LifeSpanCv");
+                });
+
             modelBuilder.Entity("BreadcrumbsAPI.Models.GroupUserRelationship", b =>
                 {
                     b.HasOne("BreadcrumbsAPI.Models.Group", "Group")
+                        .WithMany("GroupUserRelationships")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BreadcrumbsAPI.Models.CodeValue", "StatusCv")
                         .WithMany()
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("StatusCvId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("BreadcrumbsAPI.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("GroupUserRelationships")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Group");
+
+                    b.Navigation("StatusCv");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BreadcrumbsAPI.Models.Post", b =>
+            modelBuilder.Entity("BreadcrumbsAPI.Models.Location", b =>
                 {
-                    b.HasOne("BreadcrumbsAPI.Models.Group", "Group")
+                    b.HasOne("BreadcrumbsAPI.Models.CodeValue", "LocationTypeCv")
                         .WithMany()
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("LocationTypeCvId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("BreadcrumbsAPI.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
-
-                    b.HasOne("BreadcrumbsAPI.Models.CodeValue", "PostTypeCv")
-                        .WithMany()
-                        .HasForeignKey("PostTypeCvId");
-
-                    b.Navigation("Group");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("PostTypeCv");
+                    b.Navigation("LocationTypeCv");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -550,6 +627,16 @@ namespace BreadcrumbsAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BreadcrumbsAPI.Models.Group", b =>
+                {
+                    b.Navigation("GroupUserRelationships");
+                });
+
+            modelBuilder.Entity("BreadcrumbsAPI.Models.User", b =>
+                {
+                    b.Navigation("GroupUserRelationships");
                 });
 #pragma warning restore 612, 618
         }

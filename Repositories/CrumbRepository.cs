@@ -1,26 +1,26 @@
 ﻿namespace BreadcrumbsAPI.Repositories;
 
-public class PostsRepository : IPostsRepository
+public class CrumbRepository : ICrumbRepository
 {
     private readonly BreadcrumbsDbContext context;
 
-    public PostsRepository(BreadcrumbsDbContext _context)
+    public CrumbRepository(BreadcrumbsDbContext _context)
     {
         context = _context;
     }
 
-    public async Task<List<PostDto>> GetPosts()
+    public async Task<List<CrumbDto>> GetCrumbs()
     {
         try
         {
-            var posts = await context.Posts
+            var crumbs = await context.Crumbs
                 .Include(p => p.Location)
-                .Include(p => p.PostTypeCv)
+                .Include(p => p.CrumbTypeCv)
                 .Include(p => p.Group)
                 .Where(p => !p.IsDeleted)
                 .ToListAsync();
 
-            return posts.Adapt<List<PostDto>>();
+            return crumbs.Adapt<List<CrumbDto>>();
         }
         catch (Exception ex)
         {
@@ -29,14 +29,14 @@ public class PostsRepository : IPostsRepository
         }
     }
 
-    public async Task<PostDto> AddPost(PostDto postDto)
+    public async Task<CrumbDto> AddCrumb(CrumbDto crumbDto)
     {
         try
         {
-            var post = postDto.Adapt<Post>();
-            await context.Posts.AddAsync(post);
+            var crumb = crumbDto.Adapt<Crumb>();
+            await context.Crumbs.AddAsync(crumb);
             await context.SaveChangesAsync(new CancellationToken());
-            return post.Adapt<PostDto>();
+            return crumb.Adapt<CrumbDto>();
         }
         catch (Exception ex)
         {
@@ -45,14 +45,14 @@ public class PostsRepository : IPostsRepository
         }
     }
 
-    public async Task<bool> UpdatePost(PostDto postDto)
+    public async Task<bool> UpdateCrumb(CrumbDto crumbDto)
     {
         try
         {
-            var post = await GetPost(context, postDto.Id);
-            post = postDto.Adapt<Post>();
+            var crumb = await GetCrumb(context, crumbDto.Id!.Value);
+            crumb = crumbDto.Adapt<Crumb>();
 
-            context.Posts.Update(post);
+            context.Crumbs.Update(crumb);
             
             await context.SaveChangesAsync(new CancellationToken());
             return true;
@@ -64,14 +64,14 @@ public class PostsRepository : IPostsRepository
         }
     }
 
-    public async Task<bool> DeletePost(Guid id)
+    public async Task<bool> DeleteCrumb(Guid id)
     {
         try
         {
-            var post = await GetPost(context, id);
-            
-            post.IsDeleted = true;
-            context.Posts.Update(post);
+            var crumb = await GetCrumb(context, id);
+
+            crumb.IsDeleted = true;
+            context.Crumbs.Update(crumb);
 
             await context.SaveChangesAsync(new CancellationToken());
             return true;
@@ -83,11 +83,11 @@ public class PostsRepository : IPostsRepository
         }
     }
 
-    private async Task<Post> GetPost(BreadcrumbsDbContext context, Guid id)
+    private async Task<Crumb> GetCrumb(BreadcrumbsDbContext context, Guid id)
     {
-        return await context.Posts
+        return await context.Crumbs
             .Include(p => p.Location)
-            .Include(p => p.PostTypeCv)
+            .Include(p => p.CrumbTypeCv)
             .Include(p => p.Group)
             .FirstOrDefaultAsync(p => p.Id == id) ?? throw new Exception();
     }

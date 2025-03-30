@@ -79,50 +79,6 @@ namespace BreadcrumbsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Groups",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "varchar(100)", nullable: true),
-                    Description = table.Column<string>(type: "varchar(500)", nullable: true),
-                    ImageData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    CreationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Groups", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Locations",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AddressLine1 = table.Column<string>(type: "varchar(200)", nullable: true),
-                    AddressLine2 = table.Column<string>(type: "varchar(200)", nullable: true),
-                    City = table.Column<string>(type: "varchar(100)", nullable: true),
-                    StateProvince = table.Column<string>(type: "varchar(100)", nullable: true),
-                    PostalCode = table.Column<string>(type: "varchar(50)", nullable: true),
-                    Country = table.Column<string>(type: "varchar(100)", nullable: true),
-                    Latitude = table.Column<decimal>(type: "decimal(10,6)", nullable: true),
-                    Longitude = table.Column<decimal>(type: "decimal(10,6)", nullable: true),
-                    GoogleMaps = table.Column<string>(type: "varchar(500)", nullable: true),
-                    CreationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Locations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -229,13 +185,73 @@ namespace BreadcrumbsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "varchar(100)", nullable: false),
+                    Description = table.Column<string>(type: "varchar(500)", nullable: true),
+                    ImageData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    Code = table.Column<string>(type: "varchar(100)", nullable: false),
+                    CrumbLimitPerDay = table.Column<int>(type: "int", nullable: false),
+                    LifeSpanCvId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Groups_CodeValues_LifeSpanCvId",
+                        column: x => x.LifeSpanCvId,
+                        principalTable: "CodeValues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Locations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AddressLine1 = table.Column<string>(type: "varchar(200)", nullable: true),
+                    AddressLine2 = table.Column<string>(type: "varchar(200)", nullable: true),
+                    City = table.Column<string>(type: "varchar(100)", nullable: true),
+                    StateProvince = table.Column<string>(type: "varchar(100)", nullable: true),
+                    Country = table.Column<string>(type: "varchar(100)", nullable: true),
+                    Latitude = table.Column<decimal>(type: "decimal(10,6)", nullable: true),
+                    Longitude = table.Column<decimal>(type: "decimal(10,6)", nullable: true),
+                    GoogleMaps = table.Column<string>(type: "varchar(500)", nullable: true),
+                    LocationTypeCvId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Locations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Locations_CodeValues_LocationTypeCvId",
+                        column: x => x.LocationTypeCvId,
+                        principalTable: "CodeValues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GroupUserRelationships",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsOwner = table.Column<bool>(type: "bit", nullable: true),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsOwner = table.Column<bool>(type: "bit", nullable: false),
+                    StatusCvId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -249,16 +265,24 @@ namespace BreadcrumbsAPI.Migrations
                         name: "FK_GroupUserRelationships_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GroupUserRelationships_CodeValues_StatusCvId",
+                        column: x => x.StatusCvId,
+                        principalTable: "CodeValues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GroupUserRelationships_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Posts",
+                name: "Crumbs",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -266,11 +290,12 @@ namespace BreadcrumbsAPI.Migrations
                     Body = table.Column<string>(type: "varchar(500)", nullable: true),
                     Song = table.Column<string>(type: "varchar(500)", nullable: true),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    Likes = table.Column<int>(type: "int", nullable: true),
-                    LifeSpan = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PostTypeCvId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Likes = table.Column<int>(type: "int", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LifeSpanCvId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CrumbTypeCvId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -279,22 +304,31 @@ namespace BreadcrumbsAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.PrimaryKey("PK_Crumbs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_CodeValues_PostTypeCvId",
-                        column: x => x.PostTypeCvId,
+                        name: "FK_Crumbs_CodeValues_CrumbTypeCvId",
+                        column: x => x.CrumbTypeCvId,
                         principalTable: "CodeValues",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Posts_Groups_GroupId",
+                        name: "FK_Crumbs_CodeValues_LifeSpanCvId",
+                        column: x => x.LifeSpanCvId,
+                        principalTable: "CodeValues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Crumbs_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Posts_Locations_LocationId",
+                        name: "FK_Crumbs_Locations_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Locations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -342,9 +376,46 @@ namespace BreadcrumbsAPI.Migrations
                 column: "ParentCvId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupUserRelationships_GroupId",
-                table: "GroupUserRelationships",
+                name: "IX_Crumbs_CrumbTypeCvId",
+                table: "Crumbs",
+                column: "CrumbTypeCvId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Crumbs_GroupId",
+                table: "Crumbs",
                 column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Crumbs_LifeSpanCvId",
+                table: "Crumbs",
+                column: "LifeSpanCvId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Crumbs_LocationId",
+                table: "Crumbs",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_Code",
+                table: "Groups",
+                column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_LifeSpanCvId",
+                table: "Groups",
+                column: "LifeSpanCvId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupUserRelationships_GroupId_UserId",
+                table: "GroupUserRelationships",
+                columns: new[] { "GroupId", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupUserRelationships_StatusCvId",
+                table: "GroupUserRelationships",
+                column: "StatusCvId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupUserRelationships_UserId",
@@ -352,19 +423,9 @@ namespace BreadcrumbsAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_GroupId",
-                table: "Posts",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_LocationId",
-                table: "Posts",
-                column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_PostTypeCvId",
-                table: "Posts",
-                column: "PostTypeCvId");
+                name: "IX_Locations_LocationTypeCvId",
+                table: "Locations",
+                column: "LocationTypeCvId");
         }
 
         /// <inheritdoc />
@@ -386,25 +447,25 @@ namespace BreadcrumbsAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GroupUserRelationships");
+                name: "Crumbs");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "GroupUserRelationships");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Locations");
 
             migrationBuilder.DropTable(
-                name: "CodeValues");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Groups");
 
             migrationBuilder.DropTable(
-                name: "Locations");
+                name: "CodeValues");
         }
     }
 }
