@@ -13,6 +13,6 @@ public class LocationDto
     public string? GoogleMaps { get; set; }
 
     // Foreign keys
-    public Guid? LocationTypeCvId { get; set; }
+    public Guid? LocationTypeCvId { get; set; } = CodeValueConstants.CoordinatesLocationType; //Setting default value to Coordinates (for testing)
     public virtual CodeValueDto? LocationTypeCv { get; set; }
 }

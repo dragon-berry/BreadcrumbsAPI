@@ -11,7 +11,7 @@ public class UsersController : ControllerBase
         mediator = _mediator;
     }
 
-    [HttpGet("Login")]
+    [HttpPost("Login")]
     public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
     {
         var result = await mediator.Send(new LoginQuery { LoginDto = loginDto });

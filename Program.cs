@@ -36,7 +36,36 @@ builder.Services.AddControllers();
 
 // 6️. Add minimal‑API exploration + Swagger/OpenAPI for interactive docs.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Breadcrumbs API", Version = "v1" });
+
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Description = "Enter your JWT token below (Bearer token)",
+        Reference = new OpenApiReference
+        {
+            Id = "Bearer",
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+
+    c.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            jwtSecurityScheme,
+            Array.Empty<string>()
+        }
+    });
+});
+
 
 // 7. MediatR – CQRS / in‑process messaging library (Command/Query handlers).
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
@@ -71,6 +100,12 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero // no extra grace period
     };
 });
+
+TypeAdapterConfig<GroupUserRelationship, GroupUserRelationshipDto>.NewConfig()
+    .Ignore(dest => dest.Group); // Prevent recursion
+
+TypeAdapterConfig<Group, GroupDto>.NewConfig()
+    .PreserveReference(true);
 
 // ------------------------------------------------------------
 // 🔑  Authorization – policy requiring authenticated users by default.

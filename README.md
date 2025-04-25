@@ -121,3 +121,67 @@ ASP.NET will therefore inject the concrete `CrumbRepository` wherever `ICrumbRep
 ---
 
 Happy coding!  Ping Josh if something here still feels like magic. 🙂
+
+---
+
+## 🧪 Swagger Test Guide
+
+This section walks you through making sample requests using Swagger UI.
+
+---
+
+## ✅ Auth Setup in Swagger
+
+**POST** `/Users/Register`  
+```json
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "test@email.com",
+  "password": "Password1!"
+}
+```
+
+**POST** `/Users/Login`  
+```json
+{
+  "email": "test@email.com",
+  "password": "Password1!"
+}
+```
+
+Make sure you paste your JWT token in the 🔓 "Authorize" button like this:
+
+```
+Bearer YOUR_JWT_HERE
+```
+
+This will allow protected endpoints to resolve your `UserId` from the token claims.
+
+---
+
+### 🧱 Create a Group
+
+**POST** `/Groups/AddGroup`  
+```json
+{
+  "name": "Breadcrumbs",
+  "code": "123456"
+}
+```
+
+---
+
+### 🎵 Create a Crumb
+
+**POST** `/Crumbs/AddCrumb`  
+```json
+{
+  "title": "First Crumb",
+  "groupId": "6f1795ae-4290-4947-b6b4-08dd839a8d51", <-- ENTER AN ACTUAL GROUP ID
+  "location": {
+    "latitude": 0,
+    "longitude": 0
+  }
+}
+```

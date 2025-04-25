@@ -45,17 +45,11 @@ public class CrumbRepository : ICrumbRepository
         }
     }
 
-    public async Task<bool> UpdateCrumb(CrumbDto crumbDto)
+    public Task<bool> UpdateCrumb(CrumbDto crumbDto)
     {
         try
         {
-            var crumb = await GetCrumb(context, crumbDto.Id!.Value);
-            crumb = crumbDto.Adapt<Crumb>();
-
-            context.Crumbs.Update(crumb);
-            
-            await context.SaveChangesAsync(new CancellationToken());
-            return true;
+            throw new NotImplementedException("UpdateCrumb method is not implemented yet. (we don't need this since you can't update a crumb)");
         }
         catch (Exception ex)
         {
