@@ -11,6 +11,7 @@ public class GroupsController : ControllerBase
         mediator = _mediator;
     }
 
+    [Authorize]
     [HttpGet("GetGroups")]
     public async Task<ActionResult<List<GroupDto>>> GetGroups()
     {
@@ -31,6 +32,7 @@ public class GroupsController : ControllerBase
             return BadRequest();
     }
 
+    [Authorize]
     [HttpPost("AddGroup")]
     public async Task<ActionResult<GroupDto>> AddGroup([FromBody] GroupDto groupDto)
     {
@@ -41,6 +43,7 @@ public class GroupsController : ControllerBase
             return BadRequest();
     }
 
+    [Authorize]
     [HttpPost("AddUserToGroup/{groupCode}")]
     public async Task<ActionResult<bool>> AddUserToGroup(string groupCode)
     {
@@ -51,6 +54,7 @@ public class GroupsController : ControllerBase
             return BadRequest();
     }
 
+    [Authorize]
     [HttpPut("UpdateGroup")]
     public async Task<ActionResult<bool>> UpdateGroup([FromBody] GroupDto groupDto)
     {
@@ -61,6 +65,7 @@ public class GroupsController : ControllerBase
             return BadRequest();
     }
 
+    [Authorize]
     [HttpPut("LeaveGroup/{GroupId}")]
     public async Task<ActionResult<bool>> LeaveGroup(Guid groupId)
     {
@@ -71,6 +76,7 @@ public class GroupsController : ControllerBase
             return BadRequest();
     }
 
+    [Authorize]
     [HttpDelete("DeleteGroup/{GroupId}")]
     public async Task<ActionResult<bool>> DeleteGroup(Guid groupId)
     {

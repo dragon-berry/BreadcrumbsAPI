@@ -96,8 +96,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = issuer,
         ValidateAudience = true,
         ValidAudience = audience,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero // no extra grace period
+        ValidateLifetime = true
     };
 });
 
