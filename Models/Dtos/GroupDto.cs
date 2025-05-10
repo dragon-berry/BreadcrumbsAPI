@@ -7,10 +7,10 @@ public class GroupDto
     public string? Description { get; set; }
     public byte[]? ImageData { get; set; }
     public string? Code { get; set; }
-    public int CrumbLimitPerDay { get; set; } = 1;
+    public int? CrumbLimitPerDay { get; set; } = 1;
 
     // Foreign keys
-    public Guid LifeSpanCvId { get; set; } = CodeValueConstants.OneDayLifeSpan; //Setting default value to One Day Life Span (for testing)
+    public Guid? LifeSpanCvId { get; set; } = CodeValueConstants.OneDayLifeSpan; //Setting default value to One Day Life Span (for testing)
     public virtual CodeValueDto? LifeSpanCv { get; set; }
 
     public virtual ICollection<GroupUserRelationshipDto>? GroupUserRelationships { get; set; }

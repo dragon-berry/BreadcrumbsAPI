@@ -33,6 +33,14 @@ public class CrumbRepository : ICrumbRepository
     {
         try
         {
+            //TODO: Have this populated in the frontend
+            if (crumbDto.CrumbTypeCvId is null)
+                crumbDto.CrumbTypeCvId = CodeValueConstants.TextCrumbType;
+
+            //TODO: Have this populated from the group
+            if (crumbDto.LifeSpanCvId is null)
+                crumbDto.LifeSpanCvId = CodeValueConstants.OneDayLifeSpan;
+
             var crumb = crumbDto.Adapt<Crumb>();
             await context.Crumbs.AddAsync(crumb);
             await context.SaveChangesAsync(new CancellationToken());

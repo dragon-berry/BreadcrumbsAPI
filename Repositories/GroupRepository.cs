@@ -48,6 +48,12 @@ public class GroupRepository : IGroupRepository
     {
         try
         {
+            groupDto.Code = GenerateRandomCode();
+
+            //TODO: Have this populated in the frontend
+            if (groupDto.LifeSpanCvId is null)
+                groupDto.LifeSpanCvId = CodeValueConstants.OneDayLifeSpan;
+
             var group = groupDto.Adapt<Group>();
             group.GroupUserRelationships = new List<GroupUserRelationship>
             {
@@ -175,5 +181,13 @@ public class GroupRepository : IGroupRepository
             Console.WriteLine(ex.Message);
             throw;
         }
+    }
+
+    private static string GenerateRandomCode(int length = 6)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }
