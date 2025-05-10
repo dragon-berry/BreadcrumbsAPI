@@ -22,7 +22,7 @@ public class GroupsController : ControllerBase
             return BadRequest();
     }
 
-    [HttpPost("GetAllGroups")]
+    [HttpGet("GetAllGroups")]
     public async Task<ActionResult<List<GroupDto>>> GetAllGroups()
     {
         var result = await mediator.Send(new GetAllGroupsQuery());

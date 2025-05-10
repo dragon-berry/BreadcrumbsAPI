@@ -78,25 +78,48 @@ var jwtSettings = Guard.Against.Null(builder.Configuration.GetSection("JwtOption
 var secret = Guard.Against.NullOrEmpty(jwtSettings.GetValue<string>("Secret"));
 var issuer = Guard.Against.NullOrEmpty(jwtSettings.GetValue<string>("Issuer"));
 var audience = Guard.Against.NullOrEmpty(jwtSettings.GetValue<string>("Audience"));
-var key = Encoding.ASCII.GetBytes(secret);
+var key = Encoding.UTF8.GetBytes(secret);
 
 // Configure the authentication handler to validate JWTs on incoming requests.
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
-        ValidIssuer = issuer,
         ValidateAudience = true,
         ValidAudience = audience,
-        ValidateLifetime = true
+        ValidIssuer = issuer,
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogWarning("JWT authentication failed: {Message}", context.Exception.Message);
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("JWT challenge triggered.");
+            return Task.CompletedTask;
+        },
+        OnMessageReceived = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation($"JWT received: {context.Token}");
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -117,15 +140,7 @@ builder.Services.AddAuthorization(options =>
         .Build());
 });
 
-// ------------------------------------------------------------
-// 👤  ASP.NET Core Identity – user management & password hashing.
-// ------------------------------------------------------------
-builder.Services.AddIdentity<User, IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<BreadcrumbsDbContext>()
-    .AddDefaultTokenProviders();
-
-// Fine‑tune Identity options (password rules, lockout, etc.).
-builder.Services.Configure<IdentityOptions>(options =>
+builder.Services.AddIdentityCore<User>(options =>
 {
     // 🔒  Lockout settings – protect against brute‑force login attempts.
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -138,14 +153,15 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false; // special char not required
     options.Password.RequireUppercase = false;
     options.Password.RequiredLength = 6;
-    options.Password.RequiredUniqueChars = 1;
 
     // 📧  Sign‑in settings.
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 
     options.User.RequireUniqueEmail = true;
-});
+})
+.AddRoles<IdentityRole<Guid>>()
+.AddEntityFrameworkStores<BreadcrumbsDbContext>();
 
 // ------------------------------------------------------------
 // 🏗️  Application‑specific services / repositories.
