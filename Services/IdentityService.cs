@@ -4,13 +4,11 @@ public class IdentityService : IIdentityService
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private readonly SignInManager<User> _signInManager;
 
-    public IdentityService(UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager, SignInManager<User> signInManager)
+    public IdentityService(UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager)
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _signInManager = signInManager;
     }
 
     public async Task<User> CreateUserAsync(RegisterDto registerDto)
@@ -18,6 +16,8 @@ public class IdentityService : IIdentityService
         var user = registerDto.Adapt<User>();
         user.UserName = registerDto.Email;
         var result = await _userManager.CreateAsync(user, registerDto.Password!);
+        if (!result.Succeeded)
+            throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
 
         return user;
     }
@@ -40,9 +40,8 @@ public class IdentityService : IIdentityService
         if (user == null)
             return null;
 
-        var result = await _signInManager.PasswordSignInAsync(user, password, true, false);
-
-        if (!result.Succeeded)
+        var isCorrect = await _userManager.CheckPasswordAsync(user, password);
+        if (!isCorrect)
             return null;
 
         var userDto = user.Adapt<UserDto>();
@@ -154,7 +153,7 @@ public class JwtUtils : IJwtUtils
             ValidateIssuer = false,
             ValidateAudience = false,
 
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.FromMinutes(20)
         }, out SecurityToken validatedToken);
 
         var jwtToken = (JwtSecurityToken)validatedToken;

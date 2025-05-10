@@ -21,6 +21,7 @@ public class CrumbsController : ControllerBase
             return BadRequest();
     }
 
+    [Authorize]
     [HttpPost("AddCrumb")]
     public async Task<ActionResult<CrumbDto>> AddCrumb([FromBody] CrumbDto CrumbDto)
     {
@@ -31,6 +32,7 @@ public class CrumbsController : ControllerBase
             return BadRequest();
     }
 
+    [Authorize]
     [HttpPut("UpdateCrumb")]
     public async Task<ActionResult<CrumbDto>> UpdateCrumb([FromBody] CrumbDto CrumbDto)
     {
@@ -41,6 +43,7 @@ public class CrumbsController : ControllerBase
             return BadRequest();
     }
 
+    [Authorize]
     [HttpDelete("DeleteCrumb/{CrumbId}")]
     public async Task<ActionResult<CrumbDto>> DeleteCrumb(Guid CrumbId)
     {
